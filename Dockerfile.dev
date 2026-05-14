@@ -1,0 +1,56 @@
+FROM node:22-alpine AS ui
+WORKDIR /app
+COPY ui/package.json ui/package-lock.json ./
+COPY ui/bin/ ./bin/
+RUN npm ci
+COPY ui/ ./
+RUN npm run build -- --outDir=/build
+
+FROM golang:1.26-alpine AS build
+RUN apk add --no-cache gcc musl-dev
+WORKDIR /workspace
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY main.go .
+COPY adapters/ ./adapters/
+COPY cmd/ ./cmd/
+COPY conf/ ./conf/
+COPY consts/ ./consts/
+COPY core/ ./core/
+COPY db/ ./db/
+COPY log/ ./log/
+COPY model/ ./model/
+COPY persistence/ ./persistence/
+COPY plugins/ ./plugins/
+COPY resources/ ./resources/
+COPY scanner/ ./scanner/
+COPY scheduler/ ./scheduler/
+COPY server/ ./server/
+COPY tests/ ./tests/
+COPY utils/ ./utils/
+COPY ui/embed.go ./ui/embed.go
+
+COPY --from=ui /build ./ui/build
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=1 go build -tags netgo,sqlite_fts5 -ldflags="-w -s" -o /out/navidrome .
+
+FROM alpine:3.20
+RUN apk add -U --no-cache ffmpeg mpv sqlite libwebp libwebpdemux libwebpmux && \
+    for lib in libwebp libwebpdemux libwebpmux; do \
+        target=$(ls /usr/lib/$lib.so.* 2>/dev/null | head -1) && \
+        [ -n "$target" ] && ln -sf "$target" /usr/lib/$lib.so; \
+    done
+COPY --from=build /out/navidrome /app/
+RUN touch /.nddockerenv
+ENV ND_MUSICFOLDER=/music
+ENV ND_DATAFOLDER=/data
+ENV ND_CONFIGFILE=/data/navidrome.toml
+ENV ND_PORT=4533
+ENV ND_ENABLEWEBPENCODING=true
+VOLUME ["/data", "/music"]
+EXPOSE 4533
+WORKDIR /app
+ENTRYPOINT ["/app/navidrome"]

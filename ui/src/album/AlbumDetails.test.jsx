@@ -1,11 +1,29 @@
-// ui/src/album/__tests__/AlbumDetails.test.jsx
-import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { RecordContextProvider } from 'react-admin'
 import { useMediaQuery } from '@material-ui/core'
-import { Details } from './AlbumDetails'
+import { MemoryRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { createStore, combineReducers } from 'redux'
+import AlbumDetails from './AlbumDetails'
 
-// Mock useMediaQuery
+vi.mock('../common', async () => {
+  const actual = await import('../common')
+  return {
+    ...actual,
+    LoveButton: () => null,
+  }
+})
+
+vi.mock('../subsonic', () => ({
+  default: {
+    getCoverArtUrl: () => '',
+    getAlbumInfo: () => Promise.resolve({ json: { 'subsonic-response': { status: 'ok', albumInfo: {} } } }),
+  },
+}))
+
+const store = createStore(combineReducers({}), {})
+
 vi.mock('@material-ui/core', async () => {
   const actual = await import('@material-ui/core')
   return {
@@ -14,14 +32,12 @@ vi.mock('@material-ui/core', async () => {
   }
 })
 
-// Mock formatFullDate to return deterministic results
 vi.mock('../utils', async () => {
   const actual = await import('../utils')
   return {
     ...actual,
     formatFullDate: (date) => {
       if (!date) return ''
-      // Use en-CA locale for consistent test results
       return new Date(date).toLocaleDateString('en-CA', {
         year: 'numeric',
         month: 'short',
@@ -35,7 +51,6 @@ vi.mock('../utils', async () => {
 describe('Details component', () => {
   describe('Desktop view', () => {
     beforeEach(() => {
-      // Set desktop view (isXsmall = false)
       vi.mocked(useMediaQuery).mockReturnValue(false)
     })
 
@@ -50,9 +65,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -69,9 +88,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -88,9 +111,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -108,9 +135,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -127,9 +158,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -148,9 +183,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -159,7 +198,6 @@ describe('Details component', () => {
 
   describe('Mobile view', () => {
     beforeEach(() => {
-      // Set mobile view (isXsmall = true)
       vi.mocked(useMediaQuery).mockReturnValue(true)
     })
 
@@ -178,9 +216,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -197,9 +239,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -216,9 +262,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -236,9 +286,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -255,9 +309,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -276,9 +334,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -294,9 +356,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -314,9 +380,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()
@@ -334,9 +404,13 @@ describe('Details component', () => {
       }
 
       const { container } = render(
-        <RecordContextProvider value={record}>
-          <Details />
-        </RecordContextProvider>,
+        <Provider store={store}>
+          <MemoryRouter>
+            <RecordContextProvider value={record}>
+              <AlbumDetails />
+            </RecordContextProvider>
+          </MemoryRouter>
+        </Provider>,
       )
 
       expect(container).toMatchSnapshot()

@@ -1,21 +1,27 @@
-import React, { createElement, forwardRef, Fragment } from 'react'
+import React, { createElement, forwardRef, useState } from 'react'
 import {
-  AppBar as RAAppBar,
   MenuItemLink,
   useTranslate,
   usePermissions,
   getResources,
 } from 'react-admin'
+import { useToggleSidebar } from 'ra-ui-materialui'
 import { MdInfo, MdPerson, MdSupervisorAccount } from 'react-icons/md'
 import { useSelector } from 'react-redux'
-import { makeStyles, MenuItem, ListItemIcon, Divider } from '@material-ui/core'
-import ViewListIcon from '@material-ui/icons/ViewList'
+import {
+  makeStyles,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+  AppBar as MuiAppBar,
+  Toolbar,
+  Menu,
+  Tooltip,
+} from '@material-ui/core'
 import { Dialogs } from '../dialogs/Dialogs'
 import { AboutDialog } from '../dialogs'
 import PersonalMenu from './PersonalMenu'
-import ActivityPanel from './ActivityPanel'
-import NowPlayingPanel from './NowPlayingPanel'
-import UserMenu from './UserMenu'
 import config from '../config'
 
 const useStyles = makeStyles(
@@ -27,6 +33,17 @@ const useStyles = makeStyles(
       color: theme.palette.text.primary,
     },
     icon: { minWidth: theme.spacing(5) },
+    brand: {
+      fontWeight: 700,
+      fontSize: '1.1rem',
+      marginRight: 'auto',
+      color: theme.palette.text.primary,
+    },
+    rightIcons: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 4,
+    },
   }),
   {
     name: 'NDAppBar',
@@ -67,7 +84,7 @@ const settingsResources = (resource) =>
   resource.options &&
   resource.options.subMenu === 'settings'
 
-const CustomUserMenu = ({ onClick, ...rest }) => {
+const CustomUserMenuItems = ({ onClick, ...rest }) => {
   const translate = useTranslate()
   const resources = useSelector(getResources)
   const classes = useStyles(rest)
@@ -109,7 +126,7 @@ const CustomUserMenu = ({ onClick, ...rest }) => {
         primaryText={label}
         leftIcon={
           (resource.icon && createElement(resource.icon, { size: 24 })) || (
-            <ViewListIcon />
+            <i className="fa-solid fa-link" style={{width:24,textAlign:'center',fontSize:'1.1rem'}}></i>
           )
         }
         onClick={onClick}
@@ -120,27 +137,78 @@ const CustomUserMenu = ({ onClick, ...rest }) => {
 
   return (
     <>
-      {config.devActivityPanel &&
-        permissions === 'admin' &&
-        config.enableNowPlaying && <NowPlayingPanel />}
-      {config.devActivityPanel && permissions === 'admin' && <ActivityPanel />}
-      <UserMenu {...rest}>
-        <PersonalMenu sidebarIsOpen={true} onClick={onClick} />
-        <Divider />
-        {renderUserMenuItemLink()}
-        {resources
-          .filter(settingsResources)
-          .map((r) => renderSettingsMenuItemLink(r))}
-        <Divider />
-        <AboutMenuItem />
-      </UserMenu>
+      <PersonalMenu sidebarIsOpen={true} onClick={onClick} />
+      <Divider />
+      {renderUserMenuItemLink()}
+      {resources
+        .filter(settingsResources)
+        .map((r) => renderSettingsMenuItemLink(r))}
+      <Divider />
+      <AboutMenuItem onClick={onClick} />
       <Dialogs />
     </>
   )
 }
 
-const AppBar = (props) => (
-  <RAAppBar {...props} container={Fragment} userMenu={<CustomUserMenu />} />
-)
+const AppBar = (props) => {
+  const classes = useStyles()
+  const translate = useTranslate()
+  const [sidebarOpen, toggleSidebar] = useToggleSidebar()
+  const [userAnchorEl, setUserAnchorEl] = useState(null)
+  const userMenuOpen = Boolean(userAnchorEl)
+
+  const handleUserMenuOpen = (event) => {
+    setUserAnchorEl(event.currentTarget)
+  }
+  const handleUserMenuClose = () => {
+    setUserAnchorEl(null)
+  }
+
+  return (
+    <MuiAppBar position="fixed" color="secondary">
+      <Toolbar disableGutters variant="dense" className={classes.root}>
+        <Tooltip
+          title={translate(
+            sidebarOpen ? 'ra.action.close_menu' : 'ra.action.open_menu',
+            { _: 'Open/Close menu' },
+          )}
+          enterDelay={500}
+        >
+          <IconButton color="inherit" onClick={() => toggleSidebar()}>
+            <i className="fa-solid fa-bars"></i>
+          </IconButton>
+        </Tooltip>
+
+        <span className={classes.brand}>Navidrome</span>
+
+        <div className={classes.rightIcons}>
+          <IconButton color="inherit" size="small">
+            <i className="fa-solid fa-search"></i>
+          </IconButton>
+          <IconButton color="inherit" size="small" onClick={handleUserMenuOpen}>
+            <i className="fa-regular fa-circle-user"></i>
+          </IconButton>
+
+          <IconButton color="inherit" size="small">
+            <i className="fa-solid fa-ellipsis-vertical"></i>
+          </IconButton>
+        </div>
+
+        <Menu
+          id="user-menu"
+          disableScrollLock
+          anchorEl={userAnchorEl}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          getContentAnchorEl={null}
+          open={userMenuOpen}
+          onClose={handleUserMenuClose}
+        >
+          <CustomUserMenuItems onClick={handleUserMenuClose} />
+        </Menu>
+      </Toolbar>
+    </MuiAppBar>
+  )
+}
 
 export default AppBar

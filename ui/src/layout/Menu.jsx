@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux'
 import { Divider, makeStyles } from '@material-ui/core'
 import clsx from 'clsx'
 import { useTranslate, MenuItemLink, getResources } from 'react-admin'
-import ViewListIcon from '@material-ui/icons/ViewList'
-import AlbumIcon from '@material-ui/icons/Album'
 import SubMenu from './SubMenu'
 import { humanize, pluralize } from 'inflection'
 import albumLists from '../album/albumLists'
@@ -34,6 +32,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const faIcon = (className) => <i className={className} style={{ width: 24, textAlign: 'center', fontSize: '1.1rem' }}></i>
+
+const resourceIcon = {
+  album: 'fa-solid fa-compact-disc',
+  artist: 'fa-solid fa-microphone',
+  song: 'fa-solid fa-music',
+  playlist: 'fa-solid fa-list',
+  radio: 'fa-solid fa-tower-broadcast',
+  share: 'fa-solid fa-share-nodes',
+}
+
+const albumListIcon = {
+  all: 'fa-solid fa-compact-disc',
+  random: 'fa-solid fa-shuffle',
+  starred: 'fa-regular fa-star',
+  topRated: 'fa-solid fa-star',
+  recentlyAdded: 'fa-regular fa-clock',
+  recentlyPlayed: 'fa-solid fa-clock-rotate-left',
+  mostPlayed: 'fa-solid fa-chart-simple',
+}
+
 const translatedResourceName = (resource, translate) =>
   translate(`resources.${resource.name}.name`, {
     smart_count: 2,
@@ -53,7 +72,6 @@ const Menu = ({ dense = false }) => {
   const classes = useStyles({ addPadding: queue.length > 0 })
   const resources = useSelector(getResources)
 
-  // TODO State is not persisted in mobile when you close the sidebar menu. Move to redux?
   const [state, setState] = useState({
     menuAlbumList: true,
     menuPlaylists: true,
@@ -70,7 +88,7 @@ const Menu = ({ dense = false }) => {
       to={`/${resource.name}`}
       activeClassName={classes.active}
       primaryText={translatedResourceName(resource, translate)}
-      leftIcon={resource.icon || <ViewListIcon />}
+      leftIcon={faIcon(resourceIcon[resource.name] || 'fa-solid fa-link')}
       sidebarIsOpen={open}
       dense={dense}
     />
@@ -94,7 +112,7 @@ const Menu = ({ dense = false }) => {
         to={albumListAddress}
         activeClassName={classes.active}
         primaryText={name}
-        leftIcon={al.icon || <ViewListIcon />}
+        leftIcon={faIcon(albumListIcon[type] || 'fa-solid fa-link')}
         sidebarIsOpen={open}
         dense={dense}
         exact
@@ -118,7 +136,7 @@ const Menu = ({ dense = false }) => {
         isOpen={state.menuAlbumList}
         sidebarIsOpen={open}
         name="menu.albumList"
-        icon={<AlbumIcon />}
+        icon={faIcon('fa-solid fa-compact-disc')}
         dense={dense}
       >
         {Object.keys(albumLists).map((type) =>

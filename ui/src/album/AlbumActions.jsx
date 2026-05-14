@@ -1,158 +1,135 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import {
-  Button,
-  sanitizeListRestProps,
-  TopToolbar,
-  useRecordContext,
-  useTranslate,
-} from 'react-admin'
-import { useMediaQuery, makeStyles } from '@material-ui/core'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import ShuffleIcon from '@material-ui/icons/Shuffle'
-import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined'
-import { RiPlayListAddFill, RiPlayList2Fill } from 'react-icons/ri'
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
-import ShareIcon from '@material-ui/icons/Share'
-import {
-  playNext,
-  addTracks,
-  playTracks,
-  shuffleTracks,
-  openAddToPlaylist,
-  openDownloadMenu,
-  DOWNLOAD_MENU_ALBUM,
-  openShareMenu,
-} from '../actions'
-import { formatBytes } from '../utils'
-import config from '../config'
-import { ToggleFieldsMenu } from '../common'
+import { useRecordContext, useTranslate, useDataProvider } from 'react-admin'
+import { makeStyles } from '@material-ui/core'
+import { playTracks, shuffleTracks } from '../actions'
+import { useToggleLove } from '../common'
 
 const useStyles = makeStyles({
-  toolbar: { display: 'flex', justifyContent: 'space-between', width: '100%' },
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 20,
+  },
+  playAll: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '8px 24px',
+    background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 999,
+    fontWeight: 600,
+    fontSize: '0.9rem',
+    cursor: 'pointer',
+    boxShadow: '0 10px 24px rgba(37,99,235,0.18)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    textTransform: 'none',
+    minHeight: 40,
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+    },
+  },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    minWidth: 40,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '50%',
+    background: 'transparent',
+    color: '#94a3b8',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    padding: 0,
+    '&:hover': {
+      color: '#f8fafc',
+      borderColor: 'rgba(255,255,255,0.18)',
+      background: 'rgba(255,255,255,0.04)',
+    },
+  },
+  iconBtnActive: {
+    color: '#60a5fa',
+    borderColor: 'rgba(96,165,250,0.3)',
+  },
 })
 
-const AlbumButton = ({ children, ...rest }) => {
-  const record = useRecordContext(rest) || {}
-  return (
-    <Button {...rest} disabled={record.missing}>
-      {children}
-    </Button>
-  )
-}
-
-const AlbumActions = ({
-  className,
-  ids,
-  data,
-  record,
-  permanentFilter,
-  ...rest
-}) => {
+const AlbumActions = ({ record: propRecord, ...rest }) => {
   const dispatch = useDispatch()
   const translate = useTranslate()
   const classes = useStyles()
-  const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('md'))
-  const isNotSmall = useMediaQuery((theme) => theme.breakpoints.up('sm'))
+  const record = useRecordContext(rest) || propRecord || {}
+  const [toggleLove, loadingLove] = useToggleLove('album', record)
+  const dataProvider = useDataProvider()
 
-  const handlePlay = React.useCallback(() => {
+  const handlePlay = React.useCallback(async () => {
+    if (!record.id) return
+    const { data } = await dataProvider.getList('song', {
+      filter: { album_id: record.id },
+      sort: { field: 'trackNumber', order: 'ASC' },
+      pagination: { page: 1, perPage: 1000 },
+    })
+    const ids = Object.keys(data)
     dispatch(playTracks(data, ids))
-  }, [dispatch, data, ids])
+  }, [dispatch, dataProvider, record.id])
 
-  const handlePlayNext = React.useCallback(() => {
-    dispatch(playNext(data, ids))
-  }, [dispatch, data, ids])
-
-  const handlePlayLater = React.useCallback(() => {
-    dispatch(addTracks(data, ids))
-  }, [dispatch, data, ids])
-
-  const handleShuffle = React.useCallback(() => {
+  const handleShuffle = React.useCallback(async () => {
+    if (!record.id) return
+    const { data } = await dataProvider.getList('song', {
+      filter: { album_id: record.id },
+      sort: { field: 'trackNumber', order: 'ASC' },
+      pagination: { page: 1, perPage: 1000 },
+    })
+    const ids = Object.keys(data)
     dispatch(shuffleTracks(data, ids))
-  }, [dispatch, data, ids])
+  }, [dispatch, dataProvider, record.id])
 
-  const handleAddToPlaylist = React.useCallback(() => {
-    const selectedIds = ids.filter((id) => !data[id].missing)
-    dispatch(openAddToPlaylist({ selectedIds }))
-  }, [dispatch, data, ids])
+  const handleToggleLove = React.useCallback((e) => {
+    e.preventDefault()
+    toggleLove()
+    e.stopPropagation()
+  }, [toggleLove])
 
-  const handleShare = React.useCallback(() => {
-    dispatch(openShareMenu([record.id], 'album', record.name))
-  }, [dispatch, record])
-
-  const handleDownload = React.useCallback(() => {
-    dispatch(openDownloadMenu(record, DOWNLOAD_MENU_ALBUM))
-  }, [dispatch, record])
+  if (!record.id) return null
 
   return (
-    <TopToolbar className={className} {...sanitizeListRestProps(rest)}>
-      <div className={classes.toolbar}>
-        <div>
-          <AlbumButton
-            onClick={handlePlay}
-            label={translate('resources.album.actions.playAll')}
-          >
-            <PlayArrowIcon />
-          </AlbumButton>
-          <AlbumButton
-            onClick={handleShuffle}
-            label={translate('resources.album.actions.shuffle')}
-          >
-            <ShuffleIcon />
-          </AlbumButton>
-          <AlbumButton
-            onClick={handlePlayNext}
-            label={translate('resources.album.actions.playNext')}
-          >
-            <RiPlayList2Fill />
-          </AlbumButton>
-          <AlbumButton
-            onClick={handlePlayLater}
-            label={translate('resources.album.actions.addToQueue')}
-          >
-            <RiPlayListAddFill />
-          </AlbumButton>
-          <AlbumButton
-            onClick={handleAddToPlaylist}
-            label={translate('resources.album.actions.addToPlaylist')}
-          >
-            <PlaylistAddIcon />
-          </AlbumButton>
-          {config.enableSharing && (
-            <AlbumButton
-              onClick={handleShare}
-              label={translate('ra.action.share')}
-            >
-              <ShareIcon />
-            </AlbumButton>
-          )}
-          {config.enableDownloads && (
-            <AlbumButton
-              onClick={handleDownload}
-              label={
-                translate('ra.action.download') +
-                (isDesktop ? ` (${formatBytes(record.size)})` : '')
-              }
-            >
-              <CloudDownloadOutlinedIcon />
-            </AlbumButton>
-          )}
-        </div>
-        <div>{isNotSmall && <ToggleFieldsMenu resource="albumSong" />}</div>
-      </div>
-    </TopToolbar>
+    <div className={classes.root}>
+      <button className={classes.playAll} onClick={handlePlay}>
+        <i className="fa-solid fa-play" style={{ fontSize: 16 }}></i>
+        {translate('resources.album.actions.playAll')}
+      </button>
+      <button
+        className={`${classes.iconBtn} ${record.starred ? classes.iconBtnActive : ''}`}
+        onClick={handleToggleLove}
+        disabled={loadingLove}
+        title={translate(record.starred ? 'ra.action.unlove' : 'ra.action.love')}
+      >
+        {record.starred ? (
+          <i className="fa-solid fa-heart" style={{ fontSize: 16 }}></i>
+        ) : (
+          <i className="fa-regular fa-heart" style={{ fontSize: 16 }}></i>
+        )}
+      </button>
+      <button
+        className={classes.iconBtn}
+        onClick={handleShuffle}
+        title={translate('resources.album.actions.shuffle')}
+      >
+        <i className="fa-solid fa-shuffle" style={{ fontSize: 16 }}></i>
+      </button>
+      <button
+        className={classes.iconBtn}
+        title={translate('ra.action.more')}
+      >
+        <i className="fa-solid fa-ellipsis" style={{ fontSize: 16 }}></i>
+      </button>
+    </div>
   )
-}
-
-AlbumActions.propTypes = {
-  record: PropTypes.object.isRequired,
-  selectedIds: PropTypes.arrayOf(PropTypes.number),
-}
-
-AlbumActions.defaultProps = {
-  record: {},
-  selectedIds: [],
 }
 
 export default AlbumActions

@@ -4,7 +4,6 @@ NODE_VERSION=$(shell cat .nvmrc)
 comma:=,
 GO_BUILD_TAGS=netgo,sqlite_fts5$(if $(EXTRA_BUILD_TAGS),$(comma)$(EXTRA_BUILD_TAGS))
 
-# Set global environment variables, required for most targets
 export ND_ENABLEINSIGHTSCOLLECTOR=false
 
 ifneq ("$(wildcard .git/HEAD)","")
@@ -24,20 +23,20 @@ GOLANGCI_LINT_VERSION ?= v2.12.0
 
 UI_SRC_FILES := $(shell find ui -type f -not -path "ui/build/*" -not -path "ui/node_modules/*")
 
-setup: check_env download-deps install-golangci-lint setup-git ##@1_Run_First Install dependencies and prepare development environment
+setup: check_env download-deps install-golangci-lint setup-git
 	@echo Downloading Node dependencies...
 	@(cd ./ui && npm ci)
 .PHONY: setup
 
-dev: check_env   ##@Development Start Navidrome in development mode, with hot-reload for both frontend and backend
+dev: check_env
 	npx foreman -j Procfile.dev -p 4533 start
 .PHONY: dev
 
-server: check_go_env buildjs ##@Development Start the backend in development mode
+server: check_go_env buildjs
 	go tool reflex -d none -c reflex.conf
 .PHONY: server
 
-stop: ##@Development Stop development servers (UI and backend)
+stop:
 	@echo "Stopping development servers..."
 	@-pkill -f "vite"
 	@-pkill -f "go tool reflex.*reflex.conf"
@@ -45,35 +44,35 @@ stop: ##@Development Stop development servers (UI and backend)
 	@echo "Development servers stopped."
 .PHONY: stop
 
-watch: ##@Development Start Go tests in watch mode (re-run when code changes)
+watch:
 	go tool ginkgo watch -tags=$(GO_BUILD_TAGS) -notify ./...
 .PHONY: watch
 
 PKG ?= ./...
-test: ##@Development Run Go tests. Use PKG variable to specify packages to test, e.g. make test PKG=./server
+test:
 	go test -tags $(GO_BUILD_TAGS) $(PKG)
 .PHONY: test
 
-test-ndpgen: ##@Development Run tests for ndpgen plugin
+test-ndpgen:
 	cd plugins/cmd/ndpgen && go test ./......
 .PHONY: test-ndpgen
 
-testall: test test-ndpgen test-i18n test-js ##@Development Run Go and JS tests
+testall: test test-ndpgen test-i18n test-js
 .PHONY: testall
 
-test-race: ##@Development Run Go tests with race detector
+test-race:
 	go test -tags $(GO_BUILD_TAGS) -race -shuffle=on  $(PKG)
 .PHONY: test-race
 
-test-js: ##@Development Run JS tests
+test-js:
 	@(cd ./ui && npm run test)
 .PHONY: test-js
 
-test-i18n: ##@Development Validate all translations files
+test-i18n:
 	./.github/workflows/validate-translations.sh 
 .PHONY: test-i18n
 
-install-golangci-lint: ##@Development Install golangci-lint if not present
+install-golangci-lint:
 	@INSTALL=false; \
 	if PATH=./bin:$$PATH which golangci-lint > /dev/null 2>&1; then \
 		CURRENT_VERSION=$$(PATH=./bin:$$PATH golangci-lint version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1); \
@@ -92,26 +91,26 @@ install-golangci-lint: ##@Development Install golangci-lint if not present
 	fi
 .PHONY: install-golangci-lint
 
-lint: install-golangci-lint ##@Development Lint Go code
+lint: install-golangci-lint
 	PATH=./bin:$$PATH golangci-lint run --timeout 5m
 .PHONY: lint
 
-lintall: lint ##@Development Lint Go and JS code
+lintall: lint
 	@(cd ./ui && npm run check-formatting) || (echo "\n\nPlease run 'npm run prettier' to fix formatting issues." && exit 1)
 	@(cd ./ui && npm run lint)
 .PHONY: lintall
 
-format: ##@Development Format code
+format:
 	@(cd ./ui && npm run prettier)
 	@go tool goimports -w `find . -name '*.go' | grep -v _gen.go$$ | grep -v .pb.go$$`
 	@go mod tidy
 .PHONY: format
 
-wire: check_go_env ##@Development Update Dependency Injection
+wire: check_go_env
 	go tool wire gen -tags="$$(echo '$(GO_BUILD_TAGS)' | tr ',' ' ')" ./...
 .PHONY: wire
 
-gen: check_go_env ##@Development Run go generate for code generation
+gen: check_go_env
 	go generate ./...
 	cd plugins/cmd/ndpgen && go run . -host-wrappers -input=../../host -package=host
 	cd plugins/cmd/ndpgen && go run . -input=../../host -output=../../pdk -go -python -rust
@@ -120,16 +119,16 @@ gen: check_go_env ##@Development Run go generate for code generation
 	go mod tidy -C plugins/pdk/go
 .PHONY: gen
 
-snapshots: ##@Development Update (GoLang) Snapshot tests
+snapshots:
 	UPDATE_SNAPSHOTS=true go tool ginkgo ./server/subsonic/responses/...
 .PHONY: snapshots
 
-migration-sql: ##@Development Create an empty SQL migration file
+migration-sql:
 	@if [ -z "${name}" ]; then echo "Usage: make migration-sql name=name_of_migration_file"; exit 1; fi
 	go run github.com/pressly/goose/v3/cmd/goose@latest -dir db/migrations create ${name} sql
 .PHONY: migration
 
-migration-go: ##@Development Create an empty Go migration file
+migration-go:
 	@if [ -z "${name}" ]; then echo "Usage: make migration-go name=name_of_migration_file"; exit 1; fi
 	go run github.com/pressly/goose/v3/cmd/goose@latest -dir db/migrations create ${name}
 .PHONY: migration
@@ -137,41 +136,41 @@ migration-go: ##@Development Create an empty Go migration file
 setup-dev: setup
 .PHONY: setup-dev
 
-setup-git: ##@Development Setup Git hooks (pre-commit and pre-push)
+setup-git:
 	@echo Setting up git hooks
 	@mkdir -p .git/hooks
 	@(cd .git/hooks && ln -sf ../../git/* .)
 .PHONY: setup-git
 
-build: check_go_env buildjs ##@Build Build the project
+build: check_go_env buildjs
 	go build -ldflags="-X github.com/navidrome/navidrome/consts.gitSha=$(GIT_SHA) -X github.com/navidrome/navidrome/consts.gitTag=$(GIT_TAG)" -tags=$(GO_BUILD_TAGS)
 .PHONY: build
 
 buildall: deprecated build
 .PHONY: buildall
 
-debug-build: check_go_env buildjs ##@Build Build the project (with remote debug on)
+debug-build: check_go_env buildjs
 	go build -gcflags="all=-N -l" -ldflags="-X github.com/navidrome/navidrome/consts.gitSha=$(GIT_SHA) -X github.com/navidrome/navidrome/consts.gitTag=$(GIT_TAG)" -tags=$(GO_BUILD_TAGS)
 .PHONY: debug-build
 
-buildjs: check_node_env ui/build/index.html ##@Build Build only frontend
+buildjs: check_node_env ui/build/index.html
 .PHONY: buildjs
 
-docker-buildjs: ##@Build Build only frontend using Docker
+docker-buildjs:
 	docker build --output "./ui" --target ui-bundle .
 .PHONY: docker-buildjs
 
 ui/build/index.html: $(UI_SRC_FILES)
 	@(cd ./ui && npm run build)
 
-docker-platforms: ##@Cross_Compilation List supported platforms
+docker-platforms:
 	@echo "Supported platforms:"
 	@echo "$(SUPPORTED_PLATFORMS)" | tr ',' '\n' | sort | sed 's/^/    /'
 	@echo "\nUsage: make PLATFORMS=\"linux/amd64\" docker-build"
 	@echo "       make IMAGE_PLATFORMS=\"linux/amd64\" docker-image"
 .PHONY: docker-platforms
 
-docker-build: ##@Cross_Compilation Cross-compile for any supported platform (check `make docker-platforms`)
+docker-build:
 	docker buildx build \
 		--platform $(PLATFORMS) \
 		--build-arg GIT_TAG=${GIT_TAG} \
@@ -179,7 +178,7 @@ docker-build: ##@Cross_Compilation Cross-compile for any supported platform (che
 		--output "./binaries" --target binary .
 .PHONY: docker-build
 
-docker-image: ##@Cross_Compilation Build Docker image, tagged as `deluan/navidrome:develop`, override with DOCKER_TAG var. Use IMAGE_PLATFORMS to specify target platforms
+docker-image:
 	@echo $(IMAGE_PLATFORMS) | grep -q "windows" && echo "ERROR: Windows is not supported for Docker builds" && exit 1 || true
 	@echo $(IMAGE_PLATFORMS) | grep -q "darwin" && echo "ERROR: macOS is not supported for Docker builds" && exit 1 || true
 	@echo $(IMAGE_PLATFORMS) | grep -q "arm/v5" && echo "ERROR: Linux ARMv5 is not supported for Docker builds" && exit 1 || true
@@ -190,7 +189,7 @@ docker-image: ##@Cross_Compilation Build Docker image, tagged as `deluan/navidro
 		--tag $(DOCKER_TAG) .
 .PHONY: docker-image
 
-docker-msi: ##@Cross_Compilation Build MSI installer for Windows
+docker-msi:
 	make docker-build PLATFORMS=windows/386,windows/amd64
 	DOCKER_CLI_HINTS=false docker build -q -t navidrome-msi-builder -f release/wix/msitools.dockerfile .
 	@rm -rf binaries/msi
@@ -199,7 +198,7 @@ docker-msi: ##@Cross_Compilation Build MSI installer for Windows
 	@du -h binaries/msi/*.msi
 .PHONY: docker-msi
 
-docker-run: ##@Development Run a Navidrome Docker image. Usage: make docker-run tag=<tag>
+docker-run:
 	@if [ -z "$(tag)" ]; then echo "Usage: make docker-run tag=<tag>"; exit 1; fi
 	@TAG_DIR="tmp/$$(echo '$(tag)' | tr '/:' '_')"; mkdir -p "$$TAG_DIR"; \
     VOLUMES="-v $(PWD)/$$TAG_DIR:/data"; \
@@ -213,12 +212,34 @@ docker-run: ##@Development Run a Navidrome Docker image. Usage: make docker-run 
 	echo "Running: docker run --rm -p 4533:4533 $$VOLUMES $(tag)"; docker run --rm -p 4533:4533 $$VOLUMES $(tag)
 .PHONY: docker-run
 
-package: docker-build ##@Cross_Compilation Create binaries and packages for ALL supported platforms
+docker-dev-build:
+	docker build -t navidrome:dev -f Dockerfile.dev .
+.PHONY: docker-dev-build
+
+docker-dev-run:
+	@docker rm -f navidrome-dev 2>/dev/null; \
+	docker run -d --name navidrome-dev \
+		-p 9999:4533 \
+		-v $(PWD)/music:/music \
+		-v $(PWD)/data:/data \
+		navidrome:dev; \
+	echo "→ http://localhost:9999"
+.PHONY: docker-dev-run
+
+docker-dev-stop:
+	docker rm -f navidrome-dev 2>/dev/null || true
+.PHONY: docker-dev-stop
+
+docker-dev-logs:
+	docker logs -f navidrome-dev
+.PHONY: docker-dev-logs
+
+package: docker-build
 	@if [ -z `which goreleaser` ]; then echo "Please install goreleaser first: https://goreleaser.com/install/"; exit 1; fi
 	goreleaser release -f release/goreleaser.yml --clean --skip=publish --snapshot
 .PHONY: package
 
-get-music: ##@Development Download some free music from Navidrome's demo instance
+get-music:
 	mkdir -p music
 	( cd music; \
 	curl "https://demo.navidrome.org/rest/download?u=demo&p=demo&f=json&v=1.8.0&c=dev_download&id=2Y3qQA6zJC3ObbBrF9ZBoV" > brock.zip; \
@@ -230,12 +251,10 @@ get-music: ##@Development Download some free music from Navidrome's demo instanc
 .PHONY: get-music
 
 
-##########################################
-#### Worktrees
 
 WORKTREES_DIR := .worktrees
 
-wt: check_go_env ##@Worktrees Create and setup a git worktree. Usage: make wt name=feature-name [go=1]
+wt: check_go_env
 	@if [ -z "${name}" ]; then echo "Usage: make wt name=<branch-name> [go=1]"; exit 1; fi
 	@mkdir -p $(WORKTREES_DIR)
 	@echo "Creating worktree for branch '${name}'..."
@@ -250,7 +269,7 @@ wt: check_go_env ##@Worktrees Create and setup a git worktree. Usage: make wt na
 	@echo "  cd $(WORKTREES_DIR)/${name}"
 .PHONY: wt
 
-rm-wt: ##@Worktrees Remove a git worktree. Usage: make rm-wt name=feature-name
+rm-wt:
 	@if [ -z "${name}" ]; then echo "Usage: make rm-wt name=<branch-name>"; exit 1; fi
 	@if [ ! -d "$(WORKTREES_DIR)/${name}" ]; then echo "Worktree '${name}' not found in $(WORKTREES_DIR)/"; exit 1; fi
 	@echo "Removing worktree '${name}'..."
@@ -259,12 +278,10 @@ rm-wt: ##@Worktrees Remove a git worktree. Usage: make rm-wt name=feature-name
 	@echo "Note: branch '${name}' still exists. Delete it with: git branch -D ${name}"
 .PHONY: rm-wt
 
-ls-wt: ##@Worktrees List all active git worktrees
+ls-wt:
 	@git worktree list
 .PHONY: ls-wt
 
-##########################################
-#### Miscellaneous
 
 clean:
 	@rm -rf ./binaries ./dist ./ui/build/*
@@ -322,6 +339,6 @@ HELP_FUN = \
 	print"$$_:\n", map"  $$_->[0]".(" "x(20-length($$_->[0])))."$$_->[1]\n",\
 	@{$$help{$$_}},"\n" for sort keys %help; \
 
-help: ##@Miscellaneous Show this help
+help:
 	@echo "Usage: make [target] ...\n"
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)

@@ -1,26 +1,20 @@
 import React, { useMemo } from 'react'
 import {
   BulkActionsToolbar,
-  FunctionField,
   ListToolbar,
-  NumberField,
   TextField,
   useListContext,
   useVersion,
 } from 'react-admin'
 import clsx from 'clsx'
 import { useDispatch } from 'react-redux'
-import { Card, useMediaQuery } from '@material-ui/core'
+import { useMediaQuery } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import { playTracks } from '../actions'
 import {
   ArtistLinkField,
-  DateField,
   DurationField,
-  QualityInfo,
-  RatingField,
-  SizeField,
   SongBulkActions,
   SongContextMenu,
   SongDatagrid,
@@ -72,16 +66,10 @@ const useStyles = makeStyles(
         '& $contextMenu': {
           visibility: 'visible',
         },
-        '& $ratingField': {
-          visibility: 'visible',
-        },
       },
     },
     contextMenu: {
       visibility: (props) => (props.isDesktop ? 'hidden' : 'visible'),
-    },
-    ratingField: {
-      visibility: 'hidden',
     },
   }),
   { name: 'RaList' },
@@ -108,59 +96,21 @@ const AlbumSongs = (props) => {
         />
       ),
       artist: isDesktop && <ArtistLinkField source="artist" sortable={false} />,
-      composer: isDesktop && (
-        <ArtistLinkField source="composer" sortable={false} />
-      ),
-      duration: <DurationField source="duration" sortable={false} />,
-      year: isDesktop && (
-        <FunctionField
-          source="year"
-          render={(r) => r.year || ''}
+      duration: (
+        <DurationField
+          source="duration"
           sortable={false}
-        />
-      ),
-      playCount: isDesktop && (
-        <NumberField source="playCount" sortable={false} />
-      ),
-      playDate: <DateField source="playDate" sortable={false} showTime />,
-      quality: isDesktop && <QualityInfo source="quality" sortable={false} />,
-      size: isDesktop && <SizeField source="size" sortable={false} />,
-      channels: isDesktop && <NumberField source="channels" sortable={false} />,
-      bpm: isDesktop && <NumberField source="bpm" sortable={false} />,
-      genre: <TextField source="genre" sortable={false} />,
-      mood: isDesktop && (
-        <FunctionField
-          source="mood"
-          render={(r) => r.tags?.mood?.[0] ?? ''}
-          sortable={false}
-        />
-      ),
-      rating: isDesktop && config.enableStarRating && (
-        <RatingField
-          resource={'song'}
-          source="rating"
-          sortable={false}
-          className={classes.ratingField}
+          label={<i className="fa-regular fa-clock" />}
         />
       ),
     }
-  }, [isDesktop, classes.ratingField])
+  }, [isDesktop])
 
   const columns = useSelectedFields({
     resource: 'albumSong',
     columns: toggleableFields,
     omittedColumns: ['title'],
-    defaultOff: [
-      'composer',
-      'channels',
-      'bpm',
-      'year',
-      'playCount',
-      'playDate',
-      'size',
-      'mood',
-      'genre',
-    ],
+    defaultOff: [],
   })
 
   const bulkActionsLabel = isDesktop
@@ -175,7 +125,7 @@ const AlbumSongs = (props) => {
         {...props}
       />
       <div className={classes.main}>
-        <Card
+        <div
           className={clsx(classes.content, {
             [classes.bulkActionsDisplayed]: props.selectedIds.length > 0,
           })}
@@ -207,7 +157,7 @@ const AlbumSongs = (props) => {
               }
             />
           </SongDatagrid>
-        </Card>
+        </div>
       </div>
       <ExpandInfoDialog content={<SongInfo />} />
     </>

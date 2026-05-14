@@ -6,10 +6,7 @@ import {
   useQueryWithStore,
 } from 'react-admin'
 import { useHistory } from 'react-router-dom'
-import QueueMusicIcon from '@material-ui/icons/QueueMusic'
 import { Typography } from '@material-ui/core'
-import QueueMusicOutlinedIcon from '@material-ui/icons/QueueMusicOutlined'
-import { BiCog } from 'react-icons/bi'
 import { useDrop } from 'react-dnd'
 import SubMenu from './SubMenu'
 import { canChangeTracks, OverflowTooltip } from '../common'
@@ -105,9 +102,9 @@ const PlaylistsSubMenu = ({ state, setState, sidebarIsOpen, dense }) => {
         isOpen={state.menuPlaylists}
         sidebarIsOpen={sidebarIsOpen}
         name={'menu.playlists'}
-        icon={<QueueMusicIcon />}
+        icon={<i className="fa-solid fa-list" style={{width:24,textAlign:'center',fontSize:'1.1rem'}}></i>}
         dense={dense}
-        actionIcon={<BiCog />}
+        actionIcon={<i className="fa-solid fa-gear" style={{fontSize:'1.1rem'}}></i>}
         onAction={onPlaylistConfig}
       >
         {myPlaylists.map(renderPlaylistMenuItemLink)}
@@ -118,7 +115,7 @@ const PlaylistsSubMenu = ({ state, setState, sidebarIsOpen, dense }) => {
           isOpen={state.menuSharedPlaylists}
           sidebarIsOpen={sidebarIsOpen}
           name={'menu.sharedPlaylists'}
-          icon={<QueueMusicOutlinedIcon />}
+          icon={<i className="fa-regular fa-list" style={{width:24,textAlign:'center',fontSize:'1.1rem'}}></i>}
           dense={dense}
         >
           {sharedPlaylists.map(renderPlaylistMenuItemLink)}

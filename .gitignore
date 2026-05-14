@@ -38,4 +38,5 @@ AGENTS.md
 *.ndp
 openspec/
 go.work*
-.worktrees/
+.worktrees/*.mp3
+*.mp3

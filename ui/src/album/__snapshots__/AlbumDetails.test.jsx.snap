@@ -2,252 +2,1095 @@
 
 exports[`Details component > Desktop view > renders correctly with all date fields 1`] = `
 <div>
-  <span>
-    resources.album.fields.originalDate  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    resources.album.fields.releaseDate  Jun 15, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-6"
+  <div
+    class="NDAlbumDetails-root-96"
+  >
+    <div
+      class="NDAlbumDetails-backLink-97"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-114"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-98"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-99"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-102"
+      >
+        <div
+          class="NDAlbumDetails-badge-103"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-104 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-105"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-106"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-108"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Desktop view > renders correctly with date 1`] = `
 <div>
-  <span>
-    May 1, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-2"
+  <div
+    class="NDAlbumDetails-root-20"
+  >
+    <div
+      class="NDAlbumDetails-backLink-21"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-38"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-22"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-23"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-26"
+      >
+        <div
+          class="NDAlbumDetails-badge-27"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-28 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-29"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-30"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-32"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Desktop view > renders correctly with date and originalDate 1`] = `
 <div>
-  <span>
-    resources.album.fields.originalDate  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-4"
+  <div
+    class="NDAlbumDetails-root-58"
+  >
+    <div
+      class="NDAlbumDetails-backLink-59"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-76"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-60"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-61"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-64"
+      >
+        <div
+          class="NDAlbumDetails-badge-65"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-66 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-67"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-68"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-70"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Desktop view > renders correctly with just year range 1`] = `
 <div>
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-1"
+  <div
+    class="NDAlbumDetails-root-1"
+  >
+    <div
+      class="NDAlbumDetails-backLink-2"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-19"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-3"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-4"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-7"
+      >
+        <div
+          class="NDAlbumDetails-badge-8"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-9 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-10"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-11"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-13"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Desktop view > renders correctly with originalDate 1`] = `
 <div>
-  <span>
-    resources.album.fields.originalDate  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-3"
+  <div
+    class="NDAlbumDetails-root-39"
+  >
+    <div
+      class="NDAlbumDetails-backLink-40"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-57"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-41"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-42"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-45"
+      >
+        <div
+          class="NDAlbumDetails-badge-46"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-47 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-48"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-49"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-51"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Desktop view > renders correctly with releaseDate 1`] = `
 <div>
-  <span>
-    resources.album.fields.releaseDate  Jun 15, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
-   · 
-  <span>
-    <span>
-      01:00:00
-    </span>
-  </span>
-   · 
-  <span>
-    <span
-      class="makeStyles-root-5"
+  <div
+    class="NDAlbumDetails-root-77"
+  >
+    <div
+      class="NDAlbumDetails-backLink-78"
     >
-      100 KB
-    </span>
-  </span>
+      <a
+        class="RaLink-link-95"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-79"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-80"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-83"
+      >
+        <div
+          class="NDAlbumDetails-badge-84"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-85 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-86"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-87"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="NDAlbumDetails-infoRow-89"
+    />
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with all date fields 1`] = `
 <div>
-  <span>
-    ♫  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    ○  Jun 15, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-210"
+  >
+    <div
+      class="NDAlbumDetails-backLink-211"
+    >
+      <a
+        class="RaLink-link-228"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-212"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-213"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-216"
+      >
+        <div
+          class="NDAlbumDetails-badge-217"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-218 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-219"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-220"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with date 1`] = `
 <div>
-  <span>
-    ♫  May 1, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-134"
+  >
+    <div
+      class="NDAlbumDetails-backLink-135"
+    >
+      <a
+        class="RaLink-link-152"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-136"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-137"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-140"
+      >
+        <div
+          class="NDAlbumDetails-badge-141"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-142 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-143"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-144"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with date and originalDate 1`] = `
 <div>
-  <span>
-    ♫  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-172"
+  >
+    <div
+      class="NDAlbumDetails-backLink-173"
+    >
+      <a
+        class="RaLink-link-190"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-174"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-175"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-178"
+      >
+        <div
+          class="NDAlbumDetails-badge-179"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          <span>
+            May 1, 2020
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-180 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-181"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-182"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with just year range 1`] = `
 <div>
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-115"
+  >
+    <div
+      class="NDAlbumDetails-backLink-116"
+    >
+      <a
+        class="RaLink-link-133"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-117"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-118"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-121"
+      >
+        <div
+          class="NDAlbumDetails-badge-122"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-123 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-124"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-125"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with no date fields 1`] = `
 <div>
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-229"
+  >
+    <div
+      class="NDAlbumDetails-backLink-230"
+    >
+      <a
+        class="RaLink-link-247"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-231"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-232"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-235"
+      >
+        <div
+          class="NDAlbumDetails-badge-236"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-237 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-238"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-239"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with originalDate 1`] = `
 <div>
-  <span>
-    ♫  Mar 15, 2018
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-153"
+  >
+    <div
+      class="NDAlbumDetails-backLink-154"
+    >
+      <a
+        class="RaLink-link-171"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-155"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-156"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-159"
+      >
+        <div
+          class="NDAlbumDetails-badge-160"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-161 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-162"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-163"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with originalYear range 1`] = `
 <div>
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-267"
+  >
+    <div
+      class="NDAlbumDetails-backLink-268"
+    >
+      <a
+        class="RaLink-link-285"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-269"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-270"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-273"
+      >
+        <div
+          class="NDAlbumDetails-badge-274"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-275 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-276"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-277"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with releaseDate 1`] = `
 <div>
-  <span>
-    Jun 15, 2020
-  </span>
-   · 
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-191"
+  >
+    <div
+      class="NDAlbumDetails-backLink-192"
+    >
+      <a
+        class="RaLink-link-209"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-193"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-194"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-197"
+      >
+        <div
+          class="NDAlbumDetails-badge-198"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-199 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-200"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-201"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`Details component > Mobile view > renders correctly with year range (start and end years) 1`] = `
 <div>
-  <span>
-    12 resources.song.name
-  </span>
+  <div
+    class="NDAlbumDetails-root-248"
+  >
+    <div
+      class="NDAlbumDetails-backLink-249"
+    >
+      <a
+        class="RaLink-link-266"
+        href="/album"
+        style="color: rgb(96, 165, 250); text-decoration: none; font-size: 0.85rem; font-weight: 500;"
+      >
+        <i
+          class="fa-solid fa-arrow-left"
+        />
+         Back to Albums
+      </a>
+    </div>
+    <div
+      class="NDAlbumDetails-albumHeader-250"
+    >
+      <div
+        class="NDAlbumDetails-coverParent-251"
+      >
+        <i
+          class="fa-solid fa-music"
+          style="font-size: 4rem; color: rgba(255, 255, 255, 0.2);"
+        />
+      </div>
+      <div
+        class="NDAlbumDetails-albumInfo-254"
+      >
+        <div
+          class="NDAlbumDetails-badge-255"
+        >
+          <i
+            class="fa-regular fa-calendar"
+            style="font-size: 0.75rem;"
+          />
+          
+          <span>
+            ·
+          </span>
+          <span>
+            resources.album.name
+          </span>
+        </div>
+        <h1
+          class="MuiTypography-root NDAlbumDetails-recordName-256 MuiTypography-body1"
+        >
+          Test Album
+        </h1>
+        <div
+          class="NDAlbumDetails-recordArtist-257"
+        />
+        <div
+          class="NDAlbumDetails-recordMeta-258"
+        >
+          12 resources.song.name
+           · 
+          <span>
+            01:00:00
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;

@@ -118,7 +118,6 @@ type configOptions struct {
 	Tags                            map[string]TagConf `json:",omitempty"`
 	Agents                          string
 
-	// DevFlags. These are used to enable/disable debugging and incomplete features
 	DevLogLevels                      map[string]string `json:",omitempty"`
 	DevLogSourceLine                  bool
 	DevEnableProfiler                 bool
@@ -157,10 +156,10 @@ type scannerOptions struct {
 	ScanOnStartup      bool
 	Extractor          string
 	ArtistJoiner       string
-	GenreSeparators    string // Deprecated: Use Tags.genre.Split instead
-	GroupAlbumReleases bool   // Deprecated: Use PID.Album instead
-	FollowSymlinks     bool   // Whether to follow symlinks when scanning directories
-	PurgeMissing       string // Values: "never", "always", "full"
+	GenreSeparators    string
+	GroupAlbumReleases bool
+	FollowSymlinks     bool
+	PurgeMissing       string
 }
 
 type subsonicOptions struct {
@@ -184,21 +183,19 @@ type TagConf struct {
 
 type lastfmOptions struct {
 	Enabled                 bool
-	ApiKey                  string //nolint:gosec
-	Secret                  string //nolint:gosec
+	ApiKey                  string
+	Secret                  string
 	Language                string
 	ScrobbleFirstArtistOnly bool
 
-	// Computed values
-	Languages []string // Computed from Language, split by comma
+	Languages []string
 }
 
 type deezerOptions struct {
 	Enabled  bool
 	Language string
 
-	// Computed values
-	Languages []string // Computed from Language, split by comma
+	Languages []string
 }
 
 type listenBrainzOptions struct {
@@ -215,7 +212,7 @@ type httpHeaderOptions struct {
 type prometheusOptions struct {
 	Enabled     bool
 	MetricsPath string
-	Password    string //nolint:gosec
+	Password    string
 }
 
 type AudioDeviceDefinition []string
@@ -269,8 +266,6 @@ type matcherOptions struct {
 	FuzzyThreshold int
 }
 
-// logFatal prints a fatal error message to stderr and exits.
-// Overridden in tests to allow testing fatal paths.
 var logFatal = func(args ...any) {
 	_, _ = fmt.Fprintln(os.Stderr, append([]any{"FATAL:"}, args...)...)
 	os.Exit(1)
@@ -300,7 +295,6 @@ func Load(noConfigDump bool) {
 	parseIniFileConfiguration()
 	remapEnvVarKeysFromConfig()
 
-	// Map deprecated options to their new names for backwards compatibility
 	mapDeprecatedOption("ReverseProxyWhitelist", "ExtAuth.TrustedSources")
 	mapDeprecatedOption("ReverseProxyUserHeader", "ExtAuth.UserHeader")
 	mapDeprecatedOption("HTTPSecurityHeaders.CustomFrameOptionsValue", "HTTPHeaders.FrameOptions")
@@ -312,7 +306,6 @@ func Load(noConfigDump bool) {
 		logFatal("Error parsing config:", err)
 	}
 
-	// Validate non-root user early, before any filesystem operations
 	if err := validateEnforceNonRootUser(); err != nil {
 		logFatal(err)
 	}
@@ -365,10 +358,6 @@ func Load(noConfigDump bool) {
 		}
 		log.SetOutput(out)
 	} else if os.Getenv("ND_SYSTEMD_PRIORITY_LOGGING") != "" && os.Getenv("JOURNAL_STREAM") != "" {
-		// When running under systemd, prepend syslog priority prefixes so
-		// journald assigns the correct severity to each log line.
-		// Note that we have an additional environment variable, as JOURNAL_STREAM
-		// can be present in a systemd environment even if not running as a systemd service
 		log.EnableJournalFormat()
 	}
 
@@ -403,7 +392,6 @@ func Load(noConfigDump bool) {
 		Server.BaseScheme = u.Scheme
 	}
 
-	// Log configuration source
 	if Server.ConfigFile != "" {
 		log.Info("Loaded configuration", "file", Server.ConfigFile)
 	} else if hasNDEnvVars() {
@@ -412,7 +400,6 @@ func Load(noConfigDump bool) {
 		log.Warn("No configuration file found. Using default values. To specify a config file, use the --configfile flag or set the ND_CONFIGFILE environment variable.")
 	}
 
-	// Print current configuration if log level is Debug
 	if log.IsGreaterOrEqualTo(log.LevelDebug) && !noConfigDump {
 		prettyConf := pretty.Sprintf("Configuration: %# v", Server)
 		if Server.EnableLogRedacting {
@@ -425,20 +412,16 @@ func Load(noConfigDump bool) {
 		disableExternalServices()
 	}
 
-	// Make sure we don't have empty PIDs
 	Server.PID.Album = cmp.Or(Server.PID.Album, consts.DefaultAlbumPID)
 	Server.PID.Track = cmp.Or(Server.PID.Track, consts.DefaultTrackPID)
 
-	// Parse LastFM.Language into Languages slice (comma-separated, with fallback to DefaultInfoLanguage)
 	Server.LastFM.Languages = parseLanguages(Server.LastFM.Language)
 
-	// Parse Deezer.Language into Languages slice (comma-separated, with fallback to DefaultInfoLanguage)
 	Server.Deezer.Languages = parseLanguages(Server.Deezer.Language)
 
-	// Deprecated options
 	logDeprecatedOptions("Scanner.GenreSeparators", "")
 	logDeprecatedOptions("Scanner.GroupAlbumReleases", "")
-	logDeprecatedOptions("DevEnableBufferedScrobble", "") // Deprecated: Buffered scrobbling is now always enabled and this option is ignored
+	logDeprecatedOptions("DevEnableBufferedScrobble", "")
 	logDeprecatedOptions("SearchFullString", "Search.FullString")
 	logDeprecatedOptions("ReverseProxyWhitelist", "ExtAuth.TrustedSources")
 	logDeprecatedOptions("ReverseProxyUserHeader", "ExtAuth.UserHeader")
@@ -446,17 +429,14 @@ func Load(noConfigDump bool) {
 	logDeprecatedOptions("CoverJpegQuality", "CoverArtQuality")
 	logDeprecatedOptions("SimilarSongsMatchThreshold", "Matcher.FuzzyThreshold")
 
-	// Removed options
 	logRemovedOptions("Spotify.ID", "Spotify.Secret")
 
-	// Validate other options
 	if Server.UICoverArtSize < 200 || Server.UICoverArtSize > 1200 {
 		newValue := max(200, min(1200, Server.UICoverArtSize))
 		log.Warn("UICoverArtSize must be between 200 and 1200, clamping", "value", Server.UICoverArtSize, "newValue", newValue)
 		Server.UICoverArtSize = newValue
 	}
 
-	// Call init hooks
 	for _, hook := range hooks {
 		hook()
 	}
@@ -480,8 +460,6 @@ func logDeprecatedOptions(oldName, newName string) {
 	}
 }
 
-// logRemovedOptions checks if the option is set, and if yes, outputs a warning message saying the option is
-// not available anymore
 func logRemovedOptions(options ...string) {
 	for _, option := range options {
 		envVar := "ND_" + strings.ToUpper(strings.ReplaceAll(option, ".", "_"))
@@ -497,8 +475,6 @@ func logRemovedOptions(options ...string) {
 	}
 }
 
-// remapEnvVarKeysFromConfig detects ND_-prefixed keys in the config file (users mistakenly
-// using environment variable names) and remaps them to canonical Viper keys with a warning.
 func remapEnvVarKeysFromConfig() {
 	for _, key := range viper.AllKeys() {
 		if !strings.HasPrefix(key, "nd_") || !viper.InConfig(key) {
@@ -526,17 +502,12 @@ func remapEnvVarKeysFromConfig() {
 	}
 }
 
-// mapDeprecatedOption is used to provide backwards compatibility for deprecated options. It should be called after
-// the config has been read by viper, but before unmarshalling it into the Config struct.
 func mapDeprecatedOption(legacyName, newName string) {
 	if viper.IsSet(legacyName) {
 		viper.Set(newName, viper.Get(legacyName))
 	}
 }
 
-// parseIniFileConfiguration is used to parse the config file when it is in INI format. For INI files, it
-// would require a nested structure, so instead we unmarshal it to a map and then merge the nested [default]
-// section into the root level.
 func parseIniFileConfiguration() {
 	cfgFile := viper.ConfigFileUsed()
 	if strings.ToLower(filepath.Ext(cfgFile)) == ".ini" {
@@ -579,8 +550,6 @@ func validatePlaylistsPath() error {
 	return nil
 }
 
-// parseLanguages parses a comma-separated language string into a slice.
-// It trims whitespace from each entry and ensures at least [DefaultInfoLanguage] is returned.
 func parseLanguages(lang string) []string {
 	var languages []string
 	for l := range strings.SplitSeq(lang, ",") {
@@ -653,8 +622,6 @@ func validateSchedule(schedule, field string) (string, error) {
 	return schedule, nil
 }
 
-// validateURL checks if the provided URL is valid and has either http or https scheme.
-// It returns a function that can be used as a hook to validate URLs in the config.
 func validateURL(optionName, optionURL string) func() error {
 	return func() error {
 		if optionURL == "" {
@@ -685,8 +652,6 @@ func normalizeSearchBackend(value string) string {
 	}
 }
 
-// toPascalCase converts a dotted lowercase config key to PascalCase for display.
-// Example: "scanner.schedule" → "Scanner.Schedule"
 func toPascalCase(key string) string {
 	if key == "" {
 		return ""
@@ -700,12 +665,10 @@ func toPascalCase(key string) string {
 	return strings.Join(parts, ".")
 }
 
-// AddHook is used to register initialization code that should run as soon as the config is loaded
 func AddHook(hook func()) {
 	hooks = append(hooks, hook)
 }
 
-// hasNDEnvVars checks if any ND_ prefixed environment variables are set (excluding ND_CONFIGFILE)
 func hasNDEnvVars() bool {
 	for _, env := range os.Environ() {
 		if strings.HasPrefix(env, "ND_") && !strings.HasPrefix(env, "ND_CONFIGFILE=") {
@@ -770,7 +733,7 @@ func setViperDefaults() {
 	viper.SetDefault("enablefavourites", true)
 	viper.SetDefault("enablestarrating", true)
 	viper.SetDefault("enableuserediting", true)
-	viper.SetDefault("defaulttheme", "Dark")
+	viper.SetDefault("defaulttheme", "Glassmorphism")
 	viper.SetDefault("defaultlanguage", "")
 	viper.SetDefault("defaultuivolume", consts.DefaultUIVolume)
 	viper.SetDefault("uisearchdebouncems", consts.DefaultUISearchDebounceMs)
@@ -847,7 +810,6 @@ func setViperDefaults() {
 	viper.SetDefault("plugins.autoreload", false)
 	viper.SetDefault("plugins.loglevel", "")
 
-	// DevFlags. These are used to enable/disable debugging and incomplete features
 	viper.SetDefault("devlogsourceline", false)
 	viper.SetDefault("devenableprofiler", false)
 	viper.SetDefault("devautocreateadminpassword", "")
@@ -894,10 +856,8 @@ func InitConfig(cfgFile string, loadEnvVars bool) {
 
 	cfgFile = getConfigFile(cfgFile)
 	if cfgFile != "" {
-		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Search config in local directory with name "navidrome" (without extension).
 		viper.AddConfigPath(".")
 		viper.SetConfigName("navidrome")
 	}
@@ -916,15 +876,13 @@ func InitConfig(cfgFile string, loadEnvVars bool) {
 	}
 }
 
-// getConfigFile returns the path to the config file, either from the flag or from the environment variable.
-// If it is defined in the environment variable, it will check if the file exists.
 func getConfigFile(cfgFile string) string {
 	if cfgFile != "" {
 		return cfgFile
 	}
 	cfgFile = os.Getenv("ND_CONFIGFILE")
 	if cfgFile != "" {
-		if _, err := os.Stat(cfgFile); err == nil { //nolint:gosec
+		if _, err := os.Stat(cfgFile); err == nil {
 			return cfgFile
 		}
 	}

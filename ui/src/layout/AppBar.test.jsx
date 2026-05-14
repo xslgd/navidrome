@@ -9,24 +9,19 @@ import config from '../config'
 
 let store
 
+vi.mock('ra-ui-materialui', () => ({
+  useToggleSidebar: () => [false, () => {}],
+}))
+
 vi.mock('react-admin', () => ({
-  AppBar: ({ userMenu }) => <div data-testid="appbar">{userMenu}</div>,
+  MenuItemLink: ({ primaryText }) => <div>{primaryText}</div>,
   useTranslate: () => (x) => x,
   usePermissions: () => ({ permissions: 'admin' }),
   getResources: () => [],
 }))
 
-vi.mock('./NowPlayingPanel', () => ({
-  default: () => <div data-testid="now-playing-panel" />,
-}))
-vi.mock('./ActivityPanel', () => ({
-  default: () => <div data-testid="activity-panel" />,
-}))
 vi.mock('./PersonalMenu', () => ({
   default: () => <div />,
-}))
-vi.mock('./UserMenu', () => ({
-  default: ({ children }) => <div>{children}</div>,
 }))
 vi.mock('../dialogs/Dialogs', () => ({
   Dialogs: () => <div />,
@@ -37,29 +32,17 @@ vi.mock('../dialogs', () => ({
 
 describe('<AppBar />', () => {
   beforeEach(() => {
-    config.devActivityPanel = true
-    config.enableNowPlaying = true
     store = createStore(combineReducers({ activity: activityReducer }), {
       activity: { nowPlayingCount: 0 },
     })
   })
 
-  it('renders NowPlayingPanel when enabled', () => {
+  it('renders the brand text', () => {
     render(
       <Provider store={store}>
         <AppBar />
       </Provider>,
     )
-    expect(screen.getByTestId('now-playing-panel')).toBeInTheDocument()
-  })
-
-  it('hides NowPlayingPanel when disabled', () => {
-    config.enableNowPlaying = false
-    render(
-      <Provider store={store}>
-        <AppBar />
-      </Provider>,
-    )
-    expect(screen.queryByTestId('now-playing-panel')).toBeNull()
+    expect(screen.getByText('Navidrome')).toBeInTheDocument()
   })
 })

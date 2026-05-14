@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { HotKeys } from 'react-hotkeys'
 import Menu from './Menu'
 import AppBar from './AppBar'
+import StaticSidebar from './StaticSidebar'
 import Notification from './Notification'
 import useCurrentTheme from '../themes/useCurrentTheme'
 import { useSearchRefocus } from '../common'
@@ -31,6 +32,7 @@ const Layout = (props) => {
         className={classes.root}
         menu={Menu}
         appBar={AppBar}
+        sidebar={StaticSidebar}
         theme={theme}
         notification={Notification}
       />

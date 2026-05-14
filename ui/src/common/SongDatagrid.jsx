@@ -5,7 +5,7 @@ import React, {
   useState,
   forwardRef,
 } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Datagrid,
   PureDatagridBody,
@@ -41,12 +41,12 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   discIcon: {
-    marginRight: '14px',
+    marginRight: '8px',
   },
   discCoverArt: {
     width: '48px',
     height: '48px',
-    marginRight: '14px',
+    marginRight: '8px',
     objectFit: 'cover',
     borderRadius: '4px',
     flexShrink: 0,
@@ -76,6 +76,11 @@ const useStyles = makeStyles({
   contextMenu: {
     visibility: (props) => (props.isDesktop ? 'hidden' : 'visible'),
   },
+  playing: {
+    '& td': {
+      color: '#60a5fa',
+    },
+  },
 })
 
 const DiscSubtitleRow = forwardRef(
@@ -87,9 +92,6 @@ const DiscSubtitleRow = forwardRef(
     const [isLightboxOpen, setLightboxOpen] = useState(false)
     const lightboxClosedAt = React.useRef(0)
     const handlePlaySubset = (discNumber) => () => {
-      // Ignore clicks shortly after the lightbox was closed to prevent
-      // mobile touch events from "falling through" the overlay and
-      // triggering playback.
       if (Date.now() - lightboxClosedAt.current < 400) {
         return
       }
@@ -193,6 +195,10 @@ export const SongDatagridRow = ({
   const fields = React.Children.toArray(children).filter((c) =>
     isValidElement(c),
   )
+  const currentTrack = useSelector((state) => state?.player?.current || {})
+  const currentId = currentTrack.trackId
+  const isCurrent =
+    currentId && (currentId === record.id || currentId === record.mediaFileId)
 
   const [, dragDiscRef] = useDrag(
     () => ({
@@ -229,6 +235,7 @@ export const SongDatagridRow = ({
     className,
     classes.row,
     record.missing && classes.missingRow,
+    isCurrent && clsx(classes.playing, 'nd-playing'),
   )
   const childCount = fields.length
   return (

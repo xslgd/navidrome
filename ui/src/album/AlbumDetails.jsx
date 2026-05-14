@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import {
-  Card,
-  CardContent,
-  CardMedia,
   Collapse,
   makeStyles,
   Typography,
   useMediaQuery,
   withWidth,
+  Box,
+  Button,
+  Chip as MuiChip,
 } from '@material-ui/core'
 import {
   ArrayField,
@@ -18,6 +18,8 @@ import {
   useTranslate,
 } from 'react-admin'
 import Lightbox from 'react-image-lightbox'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite'
 import config from '../config'
 import 'react-image-lightbox/style.css'
 import subsonic from '../subsonic'
@@ -32,64 +34,137 @@ import {
   useAlbumsPerPage,
   useImageLoadingState,
 } from '../common'
-import { formatFullDate, intersperse } from '../utils'
+import { formatFullDate, intersperse, formatBytes } from '../utils'
 import AlbumExternalLinks from './AlbumExternalLinks'
 import { SafeHTML } from '../common/SafeHTML'
 
 const useStyles = makeStyles(
   (theme) => ({
-    root: {
-      [theme.breakpoints.down('xs')]: {
-        padding: '0.7em',
-        minWidth: '20em',
-      },
-      [theme.breakpoints.up('sm')]: {
-        padding: '1em',
-        minWidth: '32em',
-      },
+    root: {},
+    backLink: {
+      marginBottom: 20,
     },
-    cardContents: {
+    albumHeader: {
       display: 'flex',
-    },
-    details: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    content: {
-      flex: '2 0 auto',
+      gap: 32,
+      marginBottom: 32,
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        gap: 24,
+      },
     },
     coverParent: {
-      [theme.breakpoints.down('xs')]: {
-        height: '8em',
-        width: '8em',
-        minWidth: '8em',
-      },
-      [theme.breakpoints.up('sm')]: {
-        height: '10em',
-        width: '10em',
-        minWidth: '10em',
-      },
-      [theme.breakpoints.up('lg')]: {
-        height: '15em',
-        width: '15em',
-        minWidth: '15em',
-      },
-      backgroundColor: 'transparent',
+      width: 240,
+      height: 240,
+      flexShrink: 0,
+      borderRadius: 12,
+      background: 'linear-gradient(135deg, #1e3a5f, #2d1b69)',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.35), 0 0 40px rgba(59,130,246,0.06)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        inset: 0,
+        borderRadius: 12,
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+        pointerEvents: 'none',
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: 180,
+        height: 180,
+      },
     },
     cover: {
-      objectFit: 'contain',
+      objectFit: 'cover',
       cursor: 'pointer',
       display: 'block',
       width: '100%',
       height: '100%',
       backgroundColor: 'transparent',
+      borderRadius: 12,
       transition: 'opacity 0.3s ease-in-out',
     },
     coverLoading: {
       opacity: 0.5,
+    },
+    albumInfo: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+      gap: 4,
+      [theme.breakpoints.down('sm')]: {
+        alignItems: 'center',
+      },
+    },
+    badge: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '4px 12px',
+      marginBottom: 8,
+      width: 'fit-content',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: 999,
+      background: 'rgba(255,255,255,0.04)',
+      color: '#94a3b8',
+      fontSize: '0.8rem',
+      letterSpacing: '0.04em',
+      [theme.breakpoints.down('sm')]: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+    },
+    recordName: {
+      margin: 0,
+      fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
+      fontWeight: 700,
+      letterSpacing: '-0.03em',
+      lineHeight: 1.1,
+    },
+    recordArtist: {
+      fontSize: '1.4rem',
+      fontWeight: 600,
+      color: '#60a5fa',
+      margin: '2px 0',
+    },
+    recordMeta: {
+      fontSize: '0.85rem',
+      color: '#94a3b8',
+    },
+    albumActions: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      marginTop: 20,
+      [theme.breakpoints.down('sm')]: {
+        justifyContent: 'center',
+      },
+    },
+    infoRow: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 8,
+      marginBottom: 24,
+      marginTop: 24,
+    },
+    chip: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '4px 14px',
+      height: 30,
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: 999,
+      background: 'transparent',
+      color: '#94a3b8',
+      fontSize: '0.8rem',
+      lineHeight: 1,
     },
     loveButton: {
       top: theme.spacing(-0.2),
@@ -102,9 +177,6 @@ const useStyles = makeStyles(
       wordBreak: 'break-word',
       cursor: 'pointer',
     },
-    recordName: {},
-    recordArtist: {},
-    recordMeta: {},
     genreList: {
       marginTop: theme.spacing(0.5),
     },
@@ -131,11 +203,10 @@ const GenreChipField = withWidth()(({ width, ...rest }) => {
 
   return (
     <Link to={genreLink(record.id)} onClick={(e) => e.stopPropagation()}>
-      <ChipField
-        source="name"
-        // Workaround to force ChipField to be clickable
-        onClick={() => {}}
-      />
+        <ChipField
+          source="name"
+          onClick={() => {}}
+        />
     </Link>
   )
 })
@@ -151,76 +222,13 @@ const GenreList = () => {
   )
 }
 
-export const Details = (props) => {
-  const isXsmall = useMediaQuery((theme) => theme.breakpoints.down('xs'))
-  const translate = useTranslate()
-  const record = useRecordContext(props)
-
-  // Create an array of detail elements
-  let details = []
-  const addDetail = (obj) => {
-    const id = details.length
-    details.push(<span key={`detail-${record.id}-${id}`}>{obj}</span>)
-  }
-
-  // Calculate date related fields
-  const yearRange = formatRange(record, 'year')
-  const date = record.date ? formatFullDate(record.date) : yearRange
-
-  const originalDate = record.originalDate
-    ? formatFullDate(record.originalDate)
-    : formatRange(record, 'originalYear')
-  const releaseDate = record?.releaseDate && formatFullDate(record.releaseDate)
-
-  const dateToUse = originalDate || date
-  const isOriginalDate = originalDate && dateToUse !== date
-  const showDate = dateToUse && dateToUse !== releaseDate
-
-  // Get label for the main date display
-  const getDateLabel = () => {
-    if (isXsmall) return '♫'
-    if (isOriginalDate) return translate('resources.album.fields.originalDate')
-    return null
-  }
-
-  // Get label for release date display
-  const getReleaseDateLabel = () => {
-    if (!isXsmall) return translate('resources.album.fields.releaseDate')
-    if (showDate) return '○'
-    return null
-  }
-
-  // Display dates with appropriate labels
-  if (showDate) {
-    addDetail(<>{[getDateLabel(), dateToUse].filter(Boolean).join('  ')}</>)
-  }
-
-  if (releaseDate) {
-    addDetail(
-      <>{[getReleaseDateLabel(), releaseDate].filter(Boolean).join('  ')}</>,
-    )
-  }
-  addDetail(
-    <>
-      {record.songCount +
-        ' ' +
-        translate('resources.song.name', {
-          smart_count: record.songCount,
-        })}
-    </>,
-  )
-  !isXsmall && addDetail(<DurationField source={'duration'} />)
-  !isXsmall && addDetail(<SizeField source="size" />)
-
-  // Return the details rendered with separators
-  return <>{intersperse(details, ' · ')}</>
-}
-
 const AlbumDetails = (props) => {
   const record = useRecordContext(props)
   const isXsmall = useMediaQuery((theme) => theme.breakpoints.down('xs'))
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'))
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'))
   const classes = useStyles()
+  const translate = useTranslate()
   const [expanded, setExpanded] = useState(false)
   const [albumInfo, setAlbumInfo] = useState()
   const {
@@ -249,7 +257,6 @@ const AlbumDetails = (props) => {
         }
       })
       .catch((e) => {
-        // eslint-disable-next-line no-console
         console.error('error on album page', e)
       })
   }, [record])
@@ -257,95 +264,133 @@ const AlbumDetails = (props) => {
   const imageUrl = subsonic.getCoverArtUrl(record, config.uiCoverArtSize)
   const fullImageUrl = subsonic.getCoverArtUrl(record)
 
+  const yearRange = formatRange(record, 'year')
+  const date = record.date ? formatFullDate(record.date) : yearRange
+
+  const metaParts = []
+  if (record.genre) metaParts.push(record.genre)
+  if (record.songCount) metaParts.push(`${record.songCount} ${translate('resources.song.name', { smart_count: record.songCount })}`)
+  if (record.duration) metaParts.push(<DurationField key="duration" source="duration" />)
+
   return (
-    <Card className={classes.root}>
-      <div className={classes.cardContents}>
+    <div className={classes.root}>
+      <div className={classes.backLink}>
+        <Link
+          to="/album"
+          style={{
+            color: '#60a5fa',
+            textDecoration: 'none',
+            fontSize: '0.85rem',
+            fontWeight: 500,
+          }}
+        >
+          <i className="fa-solid fa-arrow-left"></i> Back to Albums
+        </Link>
+      </div>
+
+      <div className={classes.albumHeader}>
         <div className={classes.coverParent}>
-          <CardMedia
-            key={record.id}
-            component={'img'}
-            src={imageUrl}
-            width="400"
-            height="400"
-            className={`${classes.cover} ${imageLoading ? classes.coverLoading : ''}`}
-            onClick={handleOpenLightbox}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            title={record.name}
-            style={{
-              cursor: imageError ? 'default' : 'pointer',
-            }}
-          />
+          {imageError || !imageUrl ? (
+            <i className="fa-solid fa-music" style={{fontSize:'4rem', color:'rgba(255,255,255,0.2)'}}></i>
+          ) : (
+            <img
+              key={record.id}
+              src={imageUrl}
+              width="400"
+              height="400"
+              className={`${classes.cover} ${imageLoading ? classes.coverLoading : ''}`}
+              onClick={handleOpenLightbox}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              title={record.name}
+              style={{
+                cursor: imageError ? 'default' : 'pointer',
+              }}
+            />
+          )}
         </div>
-        <div className={classes.details}>
-          <CardContent className={classes.content}>
-            <Typography
-              variant={isDesktop ? 'h5' : 'h6'}
-              className={classes.recordName}
-            >
-              {record.name}
-              <LoveButton
-                className={classes.loveButton}
-                record={record}
-                resource={'album'}
-                size={isDesktop ? 'default' : 'small'}
-                aria-label="love"
-                color="primary"
-              />
-            </Typography>
-            <Typography component={'h6'} className={classes.recordArtist}>
-              {record?.tags?.['albumversion']}
-            </Typography>
-            <Typography component={'h6'} className={classes.recordArtist}>
-              <ArtistLinkField record={record} />
-            </Typography>
-            <Typography component={'div'} className={classes.recordMeta}>
-              <Details />
-            </Typography>
-            {config.enableStarRating && (
-              <div>
-                <RatingField
-                  record={record}
-                  resource={'album'}
-                  size={isDesktop ? 'medium' : 'small'}
-                />
-              </div>
-            )}
-            {isDesktop ? (
-              <GenreList />
-            ) : (
-              <Typography component={'p'}>{record.genre}</Typography>
-            )}
-            {!isXsmall && (
-              <Typography component={'div'} className={classes.recordMeta}>
-                {config.enableExternalServices && (
-                  <AlbumExternalLinks className={classes.externalLinks} />
-                )}
-              </Typography>
-            )}
-            {isDesktop && notes && (
-              <Collapse
-                collapsedHeight={'2.75em'}
-                in={expanded}
-                timeout={'auto'}
-                className={classes.notes}
-              >
-                <Typography
-                  variant={'body1'}
-                  onClick={() => setExpanded(!expanded)}
-                >
-                  <span>
-                    <SafeHTML>{notes}</SafeHTML>
-                  </span>
-                </Typography>
-              </Collapse>
-            )}
-            {isDesktop && record['comment'] && (
-              <CollapsibleComment record={record} />
-            )}
-          </CardContent>
+
+        <div className={classes.albumInfo}>
+          <div className={classes.badge}>
+            <i className="fa-regular fa-calendar" style={{fontSize:'0.75rem'}}></i>
+            {date && <span>{date}</span>}
+            <span>·</span>
+            <span>{translate('resources.album.name', { smart_count: 1 })}</span>
+          </div>
+
+          <Typography className={classes.recordName} component="h1">
+            {record.name}
+            <LoveButton
+              className={classes.loveButton}
+              record={record}
+              resource={'album'}
+              size={isDesktop ? 'default' : 'small'}
+              aria-label="love"
+              color="primary"
+            />
+          </Typography>
+
+          <div className={classes.recordArtist}>
+            <ArtistLinkField record={record} />
+          </div>
+
+          <div className={classes.recordMeta}>
+            {metaParts.length > 0 ? intersperse(metaParts, ' · ') : ''}
+          </div>
+
         </div>
       </div>
+
+      {!isMobile && (
+        <div className={classes.infoRow}>
+          {record.playCount !== undefined && (
+            <span className={classes.chip}>
+              <i className="fa-regular fa-circle-play"></i>
+              {record.playCount} {record.playCount === 1 ? 'play' : 'plays'}
+            </span>
+          )}
+          {config.enableStarRating && record.rating !== undefined && record.rating > 0 && (
+            <span className={classes.chip}>
+              <i className="fa-regular fa-star"></i>
+              {record.rating.toFixed(1)}
+            </span>
+          )}
+          {record.created && (
+            <span className={classes.chip}>
+              <i className="fa-regular fa-clock"></i>
+              Added {formatFullDate(record.created)}
+            </span>
+          )}
+          {record.quality && (
+            <span className={classes.chip}>
+              <i className="fa-solid fa-waveform"></i>
+              {record.quality}
+            </span>
+          )}
+        </div>
+      )}
+
+      {isDesktop && notes && (
+        <Collapse
+          collapsedHeight={'2.75em'}
+          in={expanded}
+          timeout={'auto'}
+          className={classes.notes}
+        >
+          <Typography
+            variant={'body1'}
+            onClick={() => setExpanded(!expanded)}
+          >
+            <span>
+              <SafeHTML>{notes}</SafeHTML>
+            </span>
+          </Typography>
+        </Collapse>
+      )}
+      {isDesktop && record['comment'] && (
+        <CollapsibleComment record={record} />
+      )}
+
       {!isDesktop && record['comment'] && (
         <CollapsibleComment record={record} />
       )}
@@ -363,6 +408,7 @@ const AlbumDetails = (props) => {
           </Collapse>
         </div>
       )}
+
       {isLightboxOpen && !imageError && (
         <Lightbox
           imagePadding={50}
@@ -372,7 +418,7 @@ const AlbumDetails = (props) => {
           onCloseRequest={handleCloseLightbox}
         />
       )}
-    </Card>
+    </div>
   )
 }
 

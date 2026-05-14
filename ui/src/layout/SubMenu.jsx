@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { useDispatch } from 'react-redux'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import ArrowRightOutlined from '@material-ui/icons/ArrowRightOutlined'
+
 import List from '@material-ui/core/List'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -79,7 +78,7 @@ const SubMenu = ({
         onClick={handleToggle}
       >
         <ListItemIcon className={classes.icon}>
-          {isOpen ? <ExpandMore /> : icon}
+          {isOpen ? <i className="fa-solid fa-chevron-down" style={{fontSize:'1.1rem'}}></i> : icon}
         </ListItemIcon>
         <Typography variant="inherit" color="textSecondary">
           {translate(name)}
@@ -124,7 +123,7 @@ const SubMenu = ({
 
 SubMenu.defaultProps = {
   action: null,
-  actionIcon: <ArrowRightOutlined fontSize={'small'} />,
+  actionIcon: <i className="fa-solid fa-arrow-right" style={{fontSize:'0.9rem'}}></i>,
 }
 
 export default SubMenu

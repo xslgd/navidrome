@@ -14,6 +14,7 @@ import { useResourceRefresh, Title } from '../common'
 
 const useStyles = makeStyles(
   (theme) => ({
+    contentCard: {},
     albumActions: {
       width: '100%',
     },
@@ -32,26 +33,22 @@ const AlbumShowLayout = (props) => {
   return (
     <>
       {record && <RaTitle title={<Title subTitle={record.name} />} />}
-      {record && <AlbumDetails {...context} />}
       {record && (
-        <ReferenceManyField
-          {...context}
-          addLabel={false}
-          reference="song"
-          target="album_id"
-          sort={{ field: 'album', order: 'ASC' }}
-          perPage={0}
-          pagination={null}
-        >
-          <AlbumSongs
-            resource={'song'}
-            exporter={false}
-            album={record}
-            actions={
-              <AlbumActions className={classes.albumActions} record={record} />
-            }
-          />
-        </ReferenceManyField>
+        <div className={classes.contentCard}>
+          <AlbumDetails {...context} />
+          <AlbumActions record={record} />
+          <ReferenceManyField
+            {...context}
+            addLabel={false}
+            reference="song"
+            target="album_id"
+            sort={{ field: 'album', order: 'ASC' }}
+            perPage={0}
+            pagination={null}
+          >
+            <AlbumSongs resource={'song'} exporter={false} album={record} />
+          </ReferenceManyField>
+        </div>
       )}
     </>
   )
